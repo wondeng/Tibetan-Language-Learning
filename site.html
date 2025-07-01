@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Tibetan - བོད་སྐད་སློབ་སྦྱོང་</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tibetan-title {
+            font-size: 1.8em;
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lesson-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .lesson-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .vocab-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tibetan-word {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .pronunciation {
+            font-style: italic;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .play-btn {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .drag-drop-area {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .exercise-title {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .drag-items {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .draggable {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: grab;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .draggable:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .draggable.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .drop-zones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .drop-zone {
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px dashed rgba(255, 255, 255, 0.6);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.drag-over {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: white;
+            transform: scale(1.05);
+        }
+
+        .drop-zone.correct {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+        }
+
+        .drop-zone.incorrect {
+            background: rgba(244, 67, 54, 0.3);
+            border-color: #F44336;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #2E7D32;
+            display: block;
+        }
+
+        .feedback.error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #C62828;
+            display: block;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            height: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 25px;
+        }
+
+        .quiz-container {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .question {
+            color: white;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .tab-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            
+            .drag-items {
+                justify-content: flex-start;
+            }
+            
+            .vocabulary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Learn Tibetan</h1>
+            <div class="tibetan-title">བོད་སྐད་སློབ་སྦྱོང་</div>
+            <p>Master the beautiful Tibetan language with interactive lessons and exercises</p>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('lessons')">📚 Lessons</button>
+            <button class="tab-btn" onclick="showTab('vocabulary')">📝 Vocabulary</button>
+            <button class="tab-btn" onclick="showTab('practice')">🎯 Practice</button>
+            <button class="tab-btn" onclick="showTab('pronunciation')">🔊 Pronunciation</button>
+        </div>
+
+        <div id="lessons" class="tab-content active">
+            <div class="lesson-card">
+                <h2 class="lesson-title">Lesson 1: Basic Greetings</h2>
+                <p><strong>Objective:</strong> Learn essential Tibetan greetings and polite expressions</p>
+                
+                <div class="vocabulary-grid">
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">བཀྲ་ཤིས་བདེ་ལེགས།</div>
+                            <div class="pronunciation">Tashi Delek</div>
+                            <div>Hello / Good wishes</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('tashi-delek')">▶</button>
+                    </div>
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">ཁྱེད་རང་གི་མིང་ལ་གང་ཟེར་གྱི་རེད།</div>
+                            <div class="pronunciation">Khyerang gi ming la gang zer gyi red?</div>
+                            <div>What is your name?</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('name-question')">▶</button>
+                    </div>
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">ངའི་མིང་ལ་___ཟེར་གྱི་རེད།</div>
+                            <div class="pronunciation">Nga'i ming la ___ zer gyi red</div>
+                            <div>My name is ___</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('my-name')">▶</button>
+                    </div>
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">ཐུགས་རྗེ་ཆེ།</div>
+                            <div class="pronunciation">Thukje che</div>
+                            <div>Thank you</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('thank-you')">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lesson-card">
+                <h2 class="lesson-title">Lesson 2: Numbers 1-10</h2>
+                <p><strong>Objective:</strong> Master basic counting in Tibetan</p>
+                
+                <div class="vocabulary-grid">
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">གཅིག</div>
+                            <div class="pronunciation">Chik</div>
+                            <div>One (1)</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('one')">▶</button>
+                    </div>
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">གཉིས</div>
+                            <div class="pronunciation">Nyi</div>
+                            <div>Two (2)</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('two')">▶</button>
+                    </div>
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">གསུམ</div>
+                            <div class="pronunciation">Sum</div>
+                            <div>Three (3)</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('three')">▶</button>
+                    </div>
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">བཞི</div>
+                            <div class="pronunciation">Zhi</div>
+                            <div>Four (4)</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('four')">▶</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vocabulary" class="tab-content">
+            <div class="quiz-container">
+                <h2 class="exercise-title">📖 Vocabulary Quiz</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="vocab-progress"></div>
+                </div>
+                
+                <div id="vocab-question" class="question">
+                    What does "བཀྲ་ཤིས་བདེ་ལེགས།" mean?
+                </div>
+                
+                <div class="options" id="vocab-options">
+                    <button class="option" onclick="selectVocabAnswer(this, true)">Hello / Good wishes</button>
+                    <button class="option" onclick="selectVocabAnswer(this, false)">Thank you</button>
+                    <button class="option" onclick="selectVocabAnswer(this, false)">Goodbye</button>
+                    <button class="option" onclick="selectVocabAnswer(this, false)">Please</button>
+                </div>
+                
+                <div id="vocab-feedback" class="feedback"></div>
+                <button class="reset-btn" onclick="resetVocabQuiz()">Next Question</button>
+            </div>
+        </div>
+
+        <div id="practice" class="tab-content">
+            <div class="drag-drop-area">
+                <h2 class="exercise-title">🎯 Drag & Drop: Match Tibetan with English</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="practice-progress"></div>
+                </div>
+                
+                <div class="drag-items" id="drag-items">
+                    <div class="draggable" draggable="true" data-value="hello">བཀྲ་ཤིས་བདེ་ལེགས།</div>
+                    <div class="draggable" draggable="true" data-value="thank-you">ཐུགས་རྗེ་ཆེ།</div>
+                    <div class="draggable" draggable="true" data-value="one">གཅིག</div>
+                    <div class="draggable" draggable="true" data-value="two">གཉིས</div>
+                </div>
+                
+                <div class="drop-zones">
+                    <div class="drop-zone" data-answer="hello">
+                        <strong>Hello / Good wishes</strong>
+                        <small>Drop the Tibetan word here</small>
+                    </div>
+                    <div class="drop-zone" data-answer="thank-you">
+                        <strong>Thank you</strong>
+                        <small>Drop the Tibetan word here</small>
+                    </div>
+                    <div class="drop-zone" data-answer="one">
+                        <strong>One</strong>
+                        <small>Drop the Tibetan number here</small>
+                    </div>
+                    <div class="drop-zone" data-answer="two">
+                        <strong>Two</strong>
+                        <small>Drop the Tibetan number here</small>
+                    </div>
+                </div>
+                
+                <div id="practice-feedback" class="feedback"></div>
+                <button class="reset-btn" onclick="resetDragDrop()">Reset Exercise</button>
+            </div>
+        </div>
+
+        <div id="pronunciation" class="tab-content">
+            <div class="lesson-card">
+                <h2 class="lesson-title">🔊 Pronunciation Guide</h2>
+                <p>Click the play buttons to hear native pronunciation of Tibetan words and phrases.</p>
+                
+                <div class="vocabulary-grid">
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">བོད་སྐད།</div>
+                            <div class="pronunciation">Böké</div>
+                            <div>Tibetan language</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('tibetan-language')">▶</button>
+                    </div>
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">སློབ་སྦྱོང་།</div>
+                            <div class="pronunciation">Lobjong</div>
+                            <div>Learning / Study</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('learning')">▶</button>
+                    </div>
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">ལེགས་སོ།</div>
+                            <div class="pronunciation">Legso</div>
+                            <div>Good / Well done</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('good')">▶</button>
+                    </div>
+                    <div class="vocab-item">
+                        <div>
+                            <div class="tibetan-word">སྐྱིད་པོ།</div>
+                            <div class="pronunciation">Kyipo</div>
+                            <div>Happy</div>
+                        </div>
+                        <button class="play-btn" onclick="playAudio('happy')">▶</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Highlight active button
+            event.target.classList.add('active');
+        }
+
+        // Audio pronunciation functionality
+        function playAudio(wordId) {
+            // Since we can't use actual audio files, we'll simulate with speech synthesis
+            const speechSynth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance();
+            
+            // Map word IDs to pronunciations
+            const pronunciations = {
+                'tashi-delek': 'Tashi Delek',
+                'name-question': 'Khyerang gi ming la gang zer gyi red',
+                'my-name': 'Nga\'i ming la',
+                'thank-you': 'Thukje che',
+                'one': 'Chik',
+                'two': 'Nyi',
+                'three': 'Sum',
+                'four': 'Zhi',
+                'tibetan-language': 'Böké',
+                'learning': 'Lobjong',
+                'good': 'Legso',
+                'happy': 'Kyipo'
+            };
+            
+            utterance.text = pronunciations[wordId] || 'Pronunciation not available';
+            utterance.rate = 0.7;
+            utterance.pitch = 1;
+            
+            speechSynth.speak(utterance);
+            
+            // Visual feedback
+            const button = event.target;
+            button.style.background = 'rgba(255, 255, 255, 0.8)';
+            setTimeout(() => {
+                button.style.background = 'rgba(255, 255, 255, 0.3)';
+            }, 500);
+        }
+
+        // Vocabulary quiz functionality
+        let currentVocabQuestion = 0;
+        const vocabQuestions = [
+            {
+                question: 'What does "བཀྲ་ཤིས་བདེ་ལེགས།" mean?',
+                options: ['Hello / Good wishes', 'Thank you', 'Goodbye', 'Please'],
+                correct: 0
+            },
+            {
+                question: 'What does "ཐུགས་རྗེ་ཆེ།" mean?',
+                options: ['Hello', 'Thank you', 'Goodbye', 'Sorry'],
+                correct: 1
+            },
+            {
+                question: 'What does "གཅིག" mean?',
+                options: ['Two', 'Three', 'One', 'Four'],
+                correct: 2
+            }
+        ];
+
+        function selectVocabAnswer(button, isCorrect) {
+            // Remove previous selections
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            button.classList.add('selected');
+            
+            const feedback = document.getElementById('vocab-feedback');
+            if (isCorrect) {
+                feedback.className = 'feedback success';
+                feedback.textContent = 'Correct! Well done!';
+                updateProgress('vocab-progress', (currentVocabQuestion + 1) / vocabQuestions.length * 100);
+            } else {
+                feedback.className = 'feedback error';
+                feedback.textContent = 'Not quite right. Try again!';
+            }
+        }
+
+        function resetVocabQuiz() {
+            currentVocabQuestion = (currentVocabQuestion + 1) % vocabQuestions.length;
+            const question = vocabQuestions[currentVocabQuestion];
+            
+            document.getElementById('vocab-question').textContent = question.question;
+            const optionsContainer = document.getElementById('vocab-options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.textContent = option;
+                button.onclick = () => selectVocabAnswer(button, index === question.correct);
+                optionsContainer.appendChild(button);
+            });
+            
+            document.getElementById('vocab-feedback').className = 'feedback';
+            document.getElementById('vocab-feedback').textContent = '';
+        }
+
+        // Drag and drop functionality
+        let draggedElement = null;
+        let correctMatches = 0;
+
+        function initializeDragDrop() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropZones = document.querySelectorAll('.drop-zone');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', handleDragStart);
+                draggable.addEventListener('dragend', handleDragEnd);
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('dragenter', handleDragEnter);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('drop', handleDrop);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.outerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            this.classList.remove('drag-over');
+
+            if (draggedElement !== this) {
+                const draggedValue = draggedElement.getAttribute('data-value');
+                const targetAnswer = this.getAttribute('data-answer');
+
+                if (draggedValue === targetAnswer) {
+                    this.classList.add('correct');
+                    this.innerHTML = `<strong>✓ Correct!</strong><br>${draggedElement.innerHTML}`;
+                    draggedElement.style.display = 'none';
+                    correctMatches++;
+                    
+                    if (correctMatches === 4) {
+                        document.getElementById('practice-feedback').className = 'feedback success';
+                        document.getElementById('practice-feedback').textContent = 'Excellent! You\'ve matched all words correctly!';
+                        updateProgress('practice-progress', 100);
+                    }
+                } else {
+                    this.classList.add('incorrect');
+                    setTimeout(() => {
+                        this.classList.remove('incorrect');
+                    }, 1000);
+                }
+            }
+
+            return false;
+        }
+
+        function resetDragDrop() {
+            correctMatches = 0;
+            const dropZones = document.querySelectorAll('.drop-zone');
+            const draggables = document.querySelectorAll('.draggable');
+            
+            dropZones.forEach(zone => {
+                zone.classList.remove('correct', 'incorrect');
+                const answer = zone.getAttribute('data-answer');
+                const labels = {
+                    'hello': 'Hello / Good wishes',
+                    'thank-you': 'Thank you',
+                    'one': 'One',
+                    'two': 'Two'
+                };
+                zone.innerHTML = `<strong>${labels[answer]}</strong><small>Drop the Tibetan word here</small>`;
+            });
+            
+            draggables.forEach(draggable => {
+                draggable.style.display = 'flex';
+                draggable.classList.remove('dragging');
+            });
+            
+            document.getElementById('practice-feedback').className = 'feedback';
+            document.getElementById('practice-feedback').textContent = '';
+            updateProgress('practice-progress', 0);
+        }
+
+        function updateProgress(progressId, percentage) {
+            document.getElementById(progressId).style.width = percentage + '%';
+        }
+
+        // Initialize drag and drop when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDragDrop();
+        });
+    </script>
+</body>
+</html>
